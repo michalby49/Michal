@@ -1,0 +1,386 @@
+#include <iostream>
+#include <cstdlib>
+#include <windows.h>
+using namespace std;
+int atak(char ostatni){
+	if(ostatni=='w'){
+		return 1;
+	}
+	if(ostatni=='s'){
+		return 2;
+	}
+	if(ostatni=='d'){
+		return 3;
+	}
+	else{
+		return 4;
+	}
+}
+void gra(int sze,int dl,int ene){
+	int T=0;
+	int dlai[ene],szeai[ene],tamp=0,temp=0,turaai=0,losowo=0;
+	int dlprzesz[sze], tura=0,wygranie=0,przegranko=3;			//przeszkody
+	int dlpostac=dl/2,szepostac=sze/2,atack=0; 					//postac
+	char wasd, ostatni;
+	for(int i=0;i<sze;i++){
+		dlprzesz[i]=((rand() % dl-1 ) + 1 );
+	}
+	for(int i=0;i<ene;i++){
+		dlai[i]=((rand()%dl-1)+1);
+		szeai[i]=((rand()%sze-1)+1);
+	}
+	do{
+
+	
+	tura=0;
+	system("cls");
+	for(int i=0;i<dl+2;i++){
+		cout<<"=";
+	}
+	cout<<endl;
+	for(int j=0;j<sze;j++){
+		cout<<"|";
+			for(int u=0;u<dl;u++){
+				tamp=0;
+				if(j==szepostac&&u==dlpostac){
+					cout<<"$";
+					continue;
+				}
+				if(atack>0){
+					if(atack==1&&j==szepostac-1&&u==dlpostac){
+						cout<<"X";
+						continue;
+					}
+					if(atack==2&&j==szepostac+1&&u==dlpostac){
+						cout<<"X";
+						continue;
+					}
+					if(atack==3&&j==szepostac&&u==dlpostac+1){
+						cout<<"X";
+						continue;
+					}
+					if(atack==4&&j==szepostac&&u==dlpostac-1){
+						cout<<"X";
+						continue;
+					}
+				}
+				for(int i=0;i<ene;i++){
+					if(j==szeai[i]&&u==dlai[i]){
+						cout<<"@";
+						i++;
+						tamp++;
+						u++;
+					}
+				}
+				if(tamp>1){
+					continue;
+				}
+				if(u==dlprzesz[j]){
+					cout<<"O";
+					continue;
+				}
+				else{
+					cout<<" ";
+				}
+			}
+		cout<<"|"<<endl;	
+	}
+		for(int i=0;i<dl+2;i++){
+		cout<<"=";
+	}
+	cout<<endl;
+	if(atack>0){
+		for(int j=0;j<ene;j++){									//pokonanie AI
+			if(atack==1){
+			if(szeai[j]==szepostac-1&&dlai[j]==dlpostac){
+				szeai[j]=10000;
+				wygranie++;
+			}
+		}
+		if(atack==2){
+			if(szeai[j]==szepostac+1&&dlai[j]==dlpostac){
+				szeai[j]=10000;
+				wygranie++;
+			}
+		}			
+		if(atack==3){
+			if(szeai[j]==szepostac&&dlai[j]==dlpostac+1){
+				szeai[j]=10000;
+				wygranie++;
+			}
+		}			
+		if(atack==4){
+			if(szeai[j]==szepostac&&dlai[j]==dlpostac-1){
+				szeai[j]=10000;
+				wygranie++;
+			}
+		}					
+		}
+	}
+		for(int j=0;j<ene;j++){
+													//Pokonanie Gracza
+		if(szeai[j]==szepostac&&dlai[j]==dlpostac){
+			przegranko--;
+		}											
+	}
+
+	for(int i=0;i<(dl/2)-8;i++){
+		cout<<" ";}
+	cout<<"Zabici "<<wygranie<<"/"<<ene<<" Hp "<<przegranko<<"/3 "<<"Tura "<<T<<endl;												
+															//interface
+	for(int i=0;i<(dl/2)-7;i++){
+		cout<<" ";
+	}
+	cout<<"WASD Ruch  X Atak"<<endl;
+	for(int i=0;i<(dl/2);i++){
+		cout<<" ";
+	}	
+	if(wygranie!=ene){						
+	cin>>wasd;
+}
+	atack=0;										//poruszanie sie
+	do{
+		if(wasd=='w'){															//w gore
+			for(int i=0;i<sze;i++){
+				if(szepostac-1==i&&dlpostac==dlprzesz[i]){
+					tura++;	
+				}
+			}
+			if(tura>0){
+				cout<<"  Tracisz ture"<<endl;
+				Sleep(1000);
+				break;
+			}
+			if(szepostac==0){
+				cout<<"  Tracisz ture"<<endl;
+				Sleep(1000);
+				break;
+			}
+			else{
+				szepostac--;
+				ostatni='w';
+				break;
+			}	
+		}
+		if(wasd=='s'){												//w dol
+			for(int i=0;i<sze;i++){
+				if(szepostac+1==i&&dlpostac==dlprzesz[i]){
+					tura++;	
+				}
+			}
+			if(tura>0){
+				cout<<"  Tracisz ture"<<endl;
+				Sleep(1000);
+				break;
+			}
+			if(szepostac==sze-1){
+				cout<<"  Tracisz ture"<<endl;
+				Sleep(1000);
+				break;
+			}
+			else{
+				szepostac++;
+				ostatni='s';
+				break;
+			}
+		}
+		if(wasd=='d'){										//w prawo
+			for(int i=0;i<sze;i++){
+				if(szepostac==i&&dlpostac+1==dlprzesz[i]){
+					tura++;	
+				}
+			}
+			if(tura>0){
+				cout<<"  Tracisz ture"<<endl;
+				Sleep(1000);
+				break;
+			}
+			if(dlpostac==dl-1){
+				cout<<"  Tracisz ture"<<endl;
+				Sleep(1000);
+				break;
+			}
+			else{
+				dlpostac++;
+				ostatni='d';
+				break;
+			}
+		}
+		if(wasd=='a'){										//w lewo
+			for(int i=0;i<sze;i++){
+				if(szepostac==i&&dlpostac-1==dlprzesz[i]){
+					tura++;	
+				}
+			}
+			if(tura>0){
+				cout<<"  Tracisz ture"<<endl;
+				Sleep(1000);
+				break;
+			}
+			if(dlpostac==0){
+				cout<<"  Tracisz ture"<<endl;
+				Sleep(1000);
+				break;
+			}
+			else{
+				dlpostac--;
+				ostatni='a';
+				break;
+			}
+		}					
+		if(wasd=='x'){						//atak
+			atack=atak(ostatni);
+			break;
+		}
+		else{
+			cout<<"  Nacisnij jeden z dostepnych klawiszy"<<endl;
+			Sleep(1000);
+			break;
+		}	
+	}
+	while(true);								
+																//AI ruch
+	for(int j=0;j<ene;j++){
+		losowo=((rand()%4)+1);
+		turaai=0;
+			do{
+		if(szeai[j]==szepostac-1&&dlai[j]==dlpostac&&ostatni=='w'){
+			break;
+		}	
+		if(szeai[j]==szepostac+1&&dlai[j]==dlpostac&&ostatni=='s'){
+			break;
+		}	
+		if(szeai[j]==szepostac&&dlai[j]==dlpostac-1&&ostatni=='a'){
+			break;
+		}	
+		if(szeai[j]==szepostac&&dlai[j]==dlpostac+1&&ostatni=='d'){
+			break;
+		}		
+		if(losowo==1){															//w gore
+			for(int i=0;i<sze;i++){
+				if(szeai[j]-1==i&&dlai[j]==dlprzesz[i]){
+					turaai++;
+				}
+			}
+			if(turaai>0){
+				break;
+			}
+			if(szeai[j]==0){
+				break;
+			}
+			else{
+				szeai[j]--;
+				break;
+			}	
+		}
+		if(losowo==2){												//w dol
+			for(int i=0;i<sze;i++){
+				if(szeai[j]+1==i&&dlai[j]==dlprzesz[i]){
+					turaai++;	
+				}
+			}
+			if(turaai>0){
+				break;
+			}
+			if(szeai[j]==sze-1){
+				break;
+			}
+			else{
+				szeai[j]++;
+				break;
+			}
+		}
+		if(losowo==3){										//w prawo
+			for(int i=0;i<sze;i++){
+				if(szeai[j]==i&&dlai[j]+1==dlprzesz[i]){
+					turaai++;	
+				}
+			}
+			if(turaai>0){
+				break;
+			}
+			if(dlai[j]==dl-2){
+				break;
+			}
+			else{
+				dlai[j]++;
+				break;
+			}
+		}
+		if(losowo==4){										//w lewo
+			for(int i=0;i<sze;i++){
+				if(szeai[j]==i&&dlai[j]-1==dlprzesz[i]){
+					turaai++;	
+				}
+			}
+			if(turaai>0){
+				break;
+			}
+			if(dlai[j]==0){
+				break;
+			}
+			else{
+				dlai[j]--;
+				break;
+			}
+
+		
+	}
+	}while(true);
+}
+	if(przegranko==0||wygranie==ene){
+		break;
+	}
+	T++;
+}while(true);
+	if(przegranko==0){
+		cout<<"Przegrales"<<endl;
+	}
+	else{
+		cout<<"Wygrales!!!"<<endl;
+	}
+}
+int main() {
+	int mapa,dl,sze,ene;
+	char ta;
+	do{
+		mapa=0;
+		system("cls");
+	cout<<"================="<<endl;
+	cout<<"=  Mordo Bitka  ="<<endl;
+	cout<<"================="<<endl;
+	cout<<"====== Mapa ====="<<endl;
+	cout<<"==== 1. Mala ===="<<endl;
+	cout<<"==== 2. Duza ===="<<endl;
+	cout<<"=== 3.Custome ==="<<endl;
+	cout<<"================="<<endl;
+	cout<<"     "; cin>>mapa;
+	if(mapa==1){
+		gra(9,19,5);
+	}
+	if(mapa==2){
+		gra(18,38,10);
+	}
+	if(mapa==3){
+	cout<<"================="<<endl;
+	cout<<"=== Szerokosc ==="<<endl;
+	cout<<"================="<<endl;
+	cout<<"     "; cin>>sze;
+	cout<<"================="<<endl;
+	cout<<"==== Dlugosc ===="<<endl;
+	cout<<"================="<<endl;
+	cout<<"     "; cin>>dl;
+	cout<<"================="<<endl;
+	cout<<"= Ilosc  Wrogow ="<<endl;
+	cout<<"================="<<endl;
+	cout<<"     "; cin>>ene;
+		gra(sze,dl,ene);
+	}
+	if(mapa!=1&&mapa!=2&&mapa!=3){
+		cout<<"cymbau"<<endl;
+	}
+	cout<<"Jeszcze raz?"<<endl;
+	cin>>ta;
+	}while(ta=='t');
+	return 0;
+}   
